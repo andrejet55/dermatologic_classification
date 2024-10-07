@@ -1,0 +1,45 @@
+# Ignore Python bytecode files
+__pycache__/
+*.py[cod]
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore Jupyter Notebook outputs
+*.ipynb
+
+# Ignore Anaconda environment files
+env/
+*.yml
+
+# Ignore TensorFlow model files
+*.h5
+*.keras
+
+# Ignore log files
+*.log
+
+# Ignore data files
+*.csv
+*.h5
+*.npz
+*.zip
+*.tar.gz
+*.tgz
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.DS_Store
+
+# Ignore virtual environment directories
+venv/
+.env/
+
+# Ignore IDE-specific files
+.idea/
+.vscode/
+
+# Ignore cache directories
+.cache/
+.venv/
