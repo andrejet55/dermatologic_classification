@@ -31,6 +31,7 @@ env/
 *.tmp
 *.temp
 *.DS_Store
+.DS_Store
 
 # Ignore virtual environment directories
 venv/
