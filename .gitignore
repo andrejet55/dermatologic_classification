@@ -44,3 +44,6 @@ venv/
 # Ignore cache directories
 .cache/
 .venv/
+
+# Ignore drafts
+individual_preprocessing
