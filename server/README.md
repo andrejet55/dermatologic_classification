@@ -1,4 +1,4 @@
-# Creating a Python Virtual Environment
+### Creating a Python Virtual Environment
 
 To create a Python virtual environment, follow these steps:
 
@@ -36,7 +36,7 @@ To create a Python virtual environment, follow these steps:
 
 Now you have a virtual environment set up for your project.
 
-# Running the Flask Application
+### Running the Flask Application
 
 To run the Flask application, follow these steps:
 
@@ -56,7 +56,7 @@ To run the Flask application, follow these steps:
 
 Now your Flask application should be running and accessible in your web browser.
 
-# Running the Flask Application with Gunicorn
+### Running the Flask Application with Gunicorn
 
 To run the Flask application with Gunicorn, follow these steps:
 
@@ -73,3 +73,20 @@ To run the Flask application with Gunicorn, follow these steps:
     The `-b` flag specifies the address and port on which the Gunicorn server should listen for incoming requests.
 
 Now your Flask application should be running with Gunicorn and accessible in your web browser.
+
+### Render
+
+1. **Configure the service**:
+    - Set the build and start commands:
+        - **Build Command**: 
+            ```sh
+            pip install -r requirements.txt
+            ```
+        - **Start Command**: 
+            ```sh
+            gunicorn -w 4 -b 0.0.0.0:10000 app:app
+            ```
+            Replace `app:app` with the module and application name of your Flask app.
+
+
+url: https://dermatologic-classification.onrender.com
