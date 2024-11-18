@@ -34,6 +34,12 @@ To create a Python virtual environment, follow these steps:
     deactivate
     ```
 
+6. **Freeze requirements**:
+    ```sh
+    pip freeze > requirements.txt
+    ```
+    This command will save the current state of your installed packages to the `requirements.txt` file.
+
 Now you have a virtual environment set up for your project.
 
 ### Running the Flask Application

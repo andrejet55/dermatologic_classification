@@ -1,20 +1,39 @@
-from flask import Flask, render_template, request
-import datetime
+from flask import Flask, request, render_template, redirect, url_for, flash
+from werkzeug.utils import secure_filename
+from dotenv import load_dotenv
+import os
+
+load_dotenv() 
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.secret_key = os.getenv("SECRET_KEY")
 
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
 
 @app.route("/", methods=["GET", "POST"])
 def home():
-    if request.method == "POST":
-        entry_content = request.form.get("content")
-        entry_date = datetime.datetime.now().strftime("%Y-%m-%d")
-        print(f"Received entry: {entry_content} on {entry_date}")
-    entries_with_date = [
-        ("Sample entry 1", "2023-10-01", "Oct 01"),
-        ("Sample entry 2", "2023-10-02", "Oct 02"),
-        ("Sample entry 3", "2023-10-03", "Oct 03"),
-    ]
-    return render_template("home.html", entries=entries_with_date)
+    return render_template("home.html")
 
-    return app
+@app.route("/upload", methods=["POST"])
+def upload_image():
+    if 'image' not in request.files:
+        flash('No file part', 'danger')
+        return redirect(url_for('home'))
+    
+    file = request.files['image']
+    
+    if file.filename == '':
+        flash('No selected file', 'danger')
+        return redirect(url_for('home'))
+
+    if file:
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        flash('File successfully uploaded', 'success')
+        return redirect(url_for('home'))
+
+    flash('File upload failed', 'danger')
+    return redirect(url_for('home'))

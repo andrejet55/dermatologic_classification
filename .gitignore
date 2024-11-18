@@ -36,6 +36,7 @@ env/
 # Ignore virtual environment directories
 venv/
 .env/
+*.env
 
 # Ignore IDE-specific files
 .idea/
