@@ -18,8 +18,11 @@ model_path= os.getenv("MODEL_PATH")
 
     
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST", "HEAD"])
 def home():
+    if request.method == "HEAD":
+        # Return an empty response with a 200 status code for HEAD requests
+        return "", 200
     if request.method == "GET":
         return render_template("home.html", prediction=None, image_data=None, 
                                current_directory=current_directory, model_path=model_path)
