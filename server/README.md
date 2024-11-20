@@ -96,3 +96,28 @@ Now your Flask application should be running with Gunicorn and accessible in you
 
 
 url: https://dermatologic-classification.onrender.com
+
+### pyenv
+To manage multiple Python versions using `pyenv`, follow these steps:
+
+1. **Install `pyenv`**:
+    Follow the installation instructions from the [pyenv GitHub repository](https://github.com/pyenv/pyenv#installation).
+
+2. **Install a specific Python version**:
+    ```sh
+    pyenv install 3.11.5
+    ```
+    Replace `3.11.5` with the version of Python you need.
+
+3. **Set the local Python version for your project**:
+    ```sh
+    pyenv local 3.11.5
+    ```
+    This command will create a `.python-version` file in your project directory with the specified Python version.
+
+4. **Verify the Python version**:
+    ```sh
+    python --version
+    ```
+    Ensure that the output matches the version you set with `pyenv`.
+
