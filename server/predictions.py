@@ -3,10 +3,15 @@ from torchvision import transforms
 from torchvision.models import resnet50
 from PIL import Image
 import io
+import os
 import logging
+from dotenv import load_dotenv
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+
+load_dotenv()
 
 def generate_prediction(image_stream):
     logging.info("Starting the prediction process...")
@@ -68,7 +73,7 @@ def generate_prediction(image_stream):
     categories = ["Level 0", "Level 1", "Level 2", "Level 3"]
 
     # Path to your saved model (update this path as needed)
-    model_path = "./models/best_resnet50_model.pth"
+    model_path = os.getenv("MODEL_PATH")
 
     try:
         # Load the model and device

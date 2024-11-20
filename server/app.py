@@ -13,13 +13,16 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
+current_directory = os.path.dirname(os.path.abspath(__file__))
+model_path= os.getenv("MODEL_PATH")
 
+    
 
 @app.route("/", methods=["GET", "POST"])
 def home():
     if request.method == "GET":
-        # Render the page with no prediction or image initially
-        return render_template("home.html", prediction=None, image_data=None)
+        return render_template("home.html", prediction=None, image_data=None, 
+                               current_directory=current_directory, model_path=model_path)
 
     if request.method == "POST":
         if 'image' not in request.files:
@@ -50,7 +53,9 @@ def home():
                 return render_template(
                     "home.html",
                     prediction=predicted_label,
-                    image_data=img_base64
+                    image_data=img_base64,
+                    current_directory=current_directory,
+                    model_path=model_path
                 )
 
             except Exception as e:

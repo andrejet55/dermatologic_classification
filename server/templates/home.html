@@ -27,6 +27,14 @@
         margin-top: 30px;
         margin-bottom: 50px;
       }
+      .footer {
+        font-size: 0.8em;
+        color: #888;
+        text-align: left;
+        margin-top: 30px;
+        padding-left: 10px;
+        line-height: .5;
+      }
     </style>
   </head>
   <body>
@@ -78,6 +86,12 @@
       <div class="btn-container">
         <a href="/" class="btn btn-secondary">Upload Another Image</a>
       </div>
+    </div>
+
+    <!-- Footer for directory info -->
+    <div class="footer">
+      <p>Current Directory: {{ current_directory }}</p>
+      <p>Model Path: {{ model_path }}</p>
     </div>
   </body>
 </html>
