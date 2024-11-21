@@ -5,6 +5,7 @@ from torchvision import transforms
 from torchvision.models import resnet50
 from PIL import Image
 from dotenv import load_dotenv
+from memory_profiler import memory_usage
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -18,8 +19,18 @@ preprocess = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
+def log_memory_usage(stage="Unknown"):
+    """Log current memory usage."""
+    import psutil
+    process = psutil.Process(os.getpid())
+    memory_info = process.memory_info()
+    logging.info(f"Memory Usage ({stage}): RSS={memory_info.rss / (1024 ** 2):.2f} MB")
+
 def load_model():
     try:
+        # Log memory usage before loading the model
+        log_memory_usage("Before loading model")
+
         # Get the model file name from environment variables
         model_file = os.getenv("MODEL")
         if not model_file:
@@ -38,14 +49,25 @@ def load_model():
 
         # Load the model
         model = resnet50(num_classes=4)
-        state_dict = torch.load(model_path, map_location=torch.device("cpu"))
-        model.load_state_dict(state_dict)
-        model.eval()
+
+        # Profile memory usage during model loading
+        def load_model_func():
+            state_dict = torch.load(model_path, map_location=torch.device("cpu"))
+            model.load_state_dict(state_dict)
+            model.eval()
+            return model
+
+        # Measure memory usage while loading the model
+        mem_usage = memory_usage((load_model_func,))
+        logging.info(f"Memory usage during model loading: {max(mem_usage):.2f} MB")
+
+        # Log memory usage after loading the model
+        log_memory_usage("After loading model")
 
         # Set up the device
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model.to(device)
-        
+
         logging.info("Model loaded successfully.")
         return model, device
     
@@ -58,6 +80,9 @@ def generate_prediction(image_stream, model, device):
     Generate a prediction for the given image using the preloaded model.
     """
     try:
+        # Log memory usage before prediction
+        log_memory_usage("Before prediction")
+
         logging.info("Starting the prediction process...")
 
         # Load and preprocess the image from the stream
@@ -77,6 +102,9 @@ def generate_prediction(image_stream, model, device):
         categories = ["Level 0", "Level 1", "Level 2", "Level 3"]
         predicted_label = categories[predicted_idx.item()]
         logging.info(f"Final predicted label: {predicted_label}")
+
+        # Log memory usage after prediction
+        log_memory_usage("After prediction")
 
         return predicted_label
     except Exception as e:
