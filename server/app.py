@@ -4,7 +4,7 @@ import os
 import io
 import base64
 import logging
-from predictions import generate_prediction
+from predictions import load_model, generate_prediction
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -16,6 +16,9 @@ app.secret_key = os.getenv("SECRET_KEY")
 current_directory = os.path.dirname(os.path.abspath(__file__))
 model_path= os.getenv("MODEL_PATH")
 
+# Load the model at server startup
+model, device = load_model(model_path)
+logging.info("Model loaded at server startup.")
     
 
 @app.route("/", methods=["GET", "POST", "HEAD"])
@@ -44,7 +47,7 @@ def home():
                 logging.info("Starting prediction process...")
 
                 # Generate the prediction
-                predicted_label = generate_prediction(image_stream)
+                predicted_label = generate_prediction(image_stream, model, device)
                 logging.info(f"Prediction completed: {predicted_label}")
 
                 # Reset and encode image for rendering
