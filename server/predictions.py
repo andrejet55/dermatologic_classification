@@ -1,11 +1,15 @@
+import os
+import logging
 import torch
 from torchvision import transforms
 from torchvision.models import resnet50
 from PIL import Image
-import logging
+from dotenv import load_dotenv
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+load_dotenv()
 
 # Define transformations for the input image
 preprocess = transforms.Compose([
@@ -14,24 +18,37 @@ preprocess = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
-def load_model(model_path):
-    """
-    Load the PyTorch model from the specified path.
-    This function is called once at server startup.
-    """
+def load_model():
     try:
-        logging.info(f"Loading the model from {model_path}...")
+        # Get the model file name from environment variables
+        model_file = os.getenv("MODEL")
+        if not model_file:
+            raise ValueError("Environment variable 'MODEL' is not set or empty.")
+
+        # Construct the absolute path to the model
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        model_path = os.path.join(current_directory, "models", model_file)
+        
+        logging.info(f"Loading model from: {model_path}")
+        
+        # Check if the model path exists
+        if not os.path.exists(model_path):
+            logging.error(f"Model file not found at path: {model_path}")
+            raise FileNotFoundError(f"Model file not found at path: {model_path}")
+
+        # Load the model
         model = resnet50(num_classes=4)
         state_dict = torch.load(model_path, map_location=torch.device("cpu"))
         model.load_state_dict(state_dict)
         model.eval()
+
+        # Set up the device
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model.to(device)
+        
         logging.info("Model loaded successfully.")
         return model, device
-    except FileNotFoundError:
-        logging.error(f"Model file not found at {model_path}. Please check the path.")
-        raise
+    
     except Exception as e:
         logging.error(f"Error loading the model: {e}")
         raise

@@ -14,10 +14,10 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 current_directory = os.path.dirname(os.path.abspath(__file__))
-model_path= os.getenv("MODEL_PATH")
+model_file = os.getenv("MODEL")
 
 # Load the model at server startup
-model, device = load_model(model_path)
+model, device = load_model()
 logging.info("Model loaded at server startup.")
     
 
@@ -28,7 +28,7 @@ def home():
         return "", 200
     if request.method == "GET":
         return render_template("home.html", prediction=None, image_data=None, 
-                               current_directory=current_directory, model_path=model_path)
+                               current_directory=current_directory, model_file=model_file)
 
     if request.method == "POST":
         if 'image' not in request.files:
@@ -61,7 +61,7 @@ def home():
                     prediction=predicted_label,
                     image_data=img_base64,
                     current_directory=current_directory,
-                    model_path=model_path
+                    model_file=model_file
                 )
 
             except Exception as e:

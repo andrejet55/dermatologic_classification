@@ -73,7 +73,7 @@ To run the Flask application with Gunicorn, follow these steps:
 
 2. **Run the Flask application with Gunicorn**:
     ```sh
-    gunicorn -w 4 -b 127.0.0.1:5000 app:app
+    gunicorn -w 1 -b 0.0.0.0:10000 app:app
     ```
     Replace `app:app` with the module and application name of your Flask app. The `-w 4` flag specifies the number of worker processes.
     The `-b` flag specifies the address and port on which the Gunicorn server should listen for incoming requests.
