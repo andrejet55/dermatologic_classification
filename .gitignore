@@ -48,3 +48,6 @@ venv/
 
 # Ignore drafts
 individual_preprocessing
+
+#ignore lfs folder
+models/
