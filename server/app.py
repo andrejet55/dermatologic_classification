@@ -4,7 +4,7 @@ import os
 import io
 import base64
 import logging
-from predictions import load_model, generate_prediction
+from predictions import generate_prediction
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -13,22 +13,14 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
-current_directory = os.path.dirname(os.path.abspath(__file__))
-model_file = os.getenv("MODEL")
-
-# Load the model at server startup
-model, device = load_model()
-logging.info("Model loaded at server startup.")
     
-
 @app.route("/", methods=["GET", "POST", "HEAD"])
 def home():
     if request.method == "HEAD":
         # Return an empty response with a 200 status code for HEAD requests
         return "", 200
     if request.method == "GET":
-        return render_template("home.html", prediction=None, image_data=None, 
-                               current_directory=current_directory, model_file=model_file)
+        return render_template("home.html", prediction=None, image_data=None)
 
     if request.method == "POST":
         if 'image' not in request.files:
@@ -47,7 +39,7 @@ def home():
                 logging.info("Starting prediction process...")
 
                 # Generate the prediction
-                predicted_label = generate_prediction(image_stream, model, device)
+                predicted_label = generate_prediction(image_stream)
                 logging.info(f"Prediction completed: {predicted_label}")
 
                 # Reset and encode image for rendering
@@ -59,9 +51,7 @@ def home():
                 return render_template(
                     "home.html",
                     prediction=predicted_label,
-                    image_data=img_base64,
-                    current_directory=current_directory,
-                    model_file=model_file
+                    image_data=img_base64
                 )
 
             except Exception as e:
