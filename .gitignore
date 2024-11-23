@@ -5,9 +5,6 @@ __pycache__/
 # Ignore Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 
-# Ignore Jupyter Notebook outputs
-*.ipynb
-
 # Ignore Anaconda environment files
 env/
 *.yml
