@@ -91,7 +91,7 @@ Now your Flask application should be running with Gunicorn and accessible in you
             ```
         - **Start Command**: 
             ```sh
-            gunicorn -w 4 -b 0.0.0.0:10000 app:app
+            gunicorn --timeout 120 -w 4 app:app
             ```
             Replace `app:app` with the module and application name of your Flask app.
 
