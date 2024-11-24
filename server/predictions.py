@@ -34,20 +34,29 @@ def send_to_huggingface(image):
         # Send the POST request with the base64-encoded image
         response = requests.post(HF_API_URL, headers=HEADERS, json=data, timeout=30)
         
-        while response.status_code == 503:
+        retry_count = 0
+        max_retries = 5
+        
+        while response.status_code == 503 and retry_count < max_retries:
             response_json = response.json()
-            estimated_time = response_json.get("estimated_time", 20)  # Default to 20 seconds if not provided
+            estimated_time = response_json.get("estimated_time", 20)
             logging.warning(f"Model loading. Retrying after {estimated_time} seconds...")
+           
             time.sleep(estimated_time)
+            retry_count += 1
             response = requests.post(HF_API_URL, headers=HEADERS, json=data, timeout=30)
 
+        if retry_count == max_retries:
+            logging.error("Max retries reached. Model still unavailable.")
+            return {"error": "Model loading took too long. Please try again later."}
+        
         # Check response status
         if response.status_code != 200:
             logging.error(
                 f"Error from Hugging Face API: {response.status_code} {response.text}"
             )
             return {"error": "Failed to get prediction from Hugging Face API"}
-
+        
         # Parse and return the result
         result = response.json()
         logging.info(f"Prediction received: {result}")
